@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>իմ գրադարան</title>
+  <style>
+    :root {
+      --bg-color: #0d1b2a;
+      --header-bg: #112233;
+      --card-bg: #1b263b;
+      --accent-color: #415a77;
+      --highlight-color: #90e0ef;
+      --border-color: #2b3a55;
+      --text-color: #e0e1dd;
+      --text-muted: #778da9;
+      --btn-primary: #0077b6;
+      --btn-primary-hover: #023e8a;
+      --btn-danger: #d90429;
+      --btn-danger-hover: #ef233c;
+      --btn-warning: #e85d04;
+      --btn-warning-hover: #dc2f02;
+      --btn-success: #2a9d8f;
+      --btn-success-hover: #264653;
+      --modal-bg: rgba(13, 27, 42, 0.88);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: var(--header-bg);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--accent-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .brand:focus-visible {
+      outline: 2px solid var(--highlight-color);
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+
+    .logo-box {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #0077b6, #90e0ef);
+      color: #0d1b2a;
+      font-weight: 800;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(144, 224, 239, 0.4);
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 6px;
+      background-color: var(--bg-color);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 14px;
+      padding: 7px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn:hover {
+      color: var(--text-color);
+      background-color: rgba(255, 255, 255, 0.07);
+    }
+
+    .lang-btn.active {
+      background-color: var(--btn-primary);
+      color: #fff;
+    }
+
+    @media (max-width: 560px) {
+      header { flex-wrap: wrap; gap: 12px; padding: 12px 16px; }
+      .lang-btn { padding: 6px 9px; font-size: 13px; }
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 24px auto;
+      padding: 0 20px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Tabs Bar */
+    .tabs-bar {
+      display: flex;
+      gap: 10px;
+      background-color: var(--header-bg);
+      padding: 8px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 180px;
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-color);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      background-color: var(--btn-primary);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 119, 182, 0.4);
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+
+    /* Search Bar */
+    .search-section {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-input {
+      width: 100%;
+      max-width: 650px;
+      padding: 14px 20px 14px 45px;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+      background-color: var(--card-bg);
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%20%23778da9'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 16px center;
+      background-size: 20px;
+    }
+
+    .search-input:focus {
+      border-color: var(--highlight-color);
+      box-shadow: 0 0 15px rgba(144, 224, 239, 0.25);
+    }
+
+    /* Views */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Form Styling */
+    .add-book-section {
+      background-color: var(--card-bg);
+      padding: 28px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: var(--highlight-color);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .form-group input {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-color);
+      color: #fff;
+      outline: none;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--highlight-color);
+    }
+
+    .form-group input[type="file"] {
+      padding: 6px;
+      cursor: pointer;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-add {
+      background-color: var(--btn-primary);
+      width: 100%;
+      font-size: 16px;
+      padding: 12px;
+    }
+
+    .btn-add:hover {
+      background-color: var(--btn-primary-hover);
+    }
+
+    .btn-cancel {
+      background-color: #475569;
+      margin-left: 10px;
+    }
+
+    .btn-cancel:hover {
+      background-color: #334155;
+    }
+
+    /* Grid Layout */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 22px;
+    }
+
+    /* Book Cards */
+    .book-card {
+      background-color: var(--card-bg);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .book-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+      border-color: var(--accent-color);
+    }
+
+    .clickable-area {
+      cursor: pointer;
+    }
+
+    .book-cover {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      background-color: #0b132b;
+    }
+
+    .book-info {
+      padding: 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .book-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .book-author {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .borrowed-info {
+      font-size: 12px;
+      color: #fde047;
+      background: rgba(253, 224, 71, 0.1);
+      padding: 8px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(253, 224, 71, 0.2);
+      line-height: 1.4;
+    }
+
+    .card-actions {
+      margin-top: auto;
+      display: flex;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 9px;
+      font-size: 13px;
+      background-color: var(--accent-color);
+    }
+
+    .btn-action:hover {
+      background-color: #537299;
+    }
+
+    .btn-borrow {
+      background-color: var(--btn-success);
+    }
+
+    .btn-borrow:hover {
+      background-color: var(--btn-success-hover);
+    }
+
+    .btn-return {
+      background-color: var(--btn-warning);
+    }
+
+    .btn-return:hover {
+      background-color: var(--btn-warning-hover);
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--modal-bg);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      padding: 26px;
+      border-radius: 16px;
+      max-width: 550px;
+      width: 100%;
+      border: 1px solid var(--border-color);
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 18px;
+      font-size: 26px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .close-btn:hover {
+      color: #fff;
+    }
+
+    .detail-images {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+      overflow-x: auto;
+    }
+
+    .detail-images img {
+      width: 48%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .detail-list {
+      margin-bottom: 20px;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-danger {
+      background-color: var(--btn-danger);
+    }
+
+    .btn-danger:hover {
+      background-color: var(--btn-danger-hover);
+    }
+
+    .btn-warning {
+      background-color: var(--btn-warning);
+    }
+
+    .btn-warning:hover {
+      background-color: var(--btn-warning-hover);
+    }
+
+    .empty-msg {
+      color: var(--text-muted);
+      font-style: italic;
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      border: 1px dashed var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand" id="brandHome" role="button" tabindex="0" onclick="goHome()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goHome();}">
+      <div class="logo-box">Ի</div>
+      <div class="brand-title">իմ գրադարան</div>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button class="lang-btn active" data-lang="hy" onclick="setLang('hy')">Հայերեն</button>
+      <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">Русский</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">English</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Search Section -->
+    <div class="search-section">
+      <input type="text" id="searchInput" class="search-input" data-i18n-ph="search" placeholder="🔍 Որոնել գիրք կամ հեղինակ բոլոր ցուցակներում..." oninput="handleSearch()">
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-bar">
+      <button class="tab-btn active" id="tab-available" onclick="switchTab('available')">
+        <span data-i18n="tabAvailable">📚 Առկա Գրքեր</span> <span class="badge" id="count-available">0</span>
+      </button>
+      <button class="tab-btn" id="tab-unavailable" onclick="switchTab('unavailable')">
+        <span data-i18n="tabUnavailable">📕 Ոչ Առկա (Վերցված)</span> <span class="badge" id="count-unavailable">0</span>
+      </button>
+      <button class="tab-btn" id="tab-add" onclick="switchTab('add')">
+        <span data-i18n="tabAdd">➕ Ավելացնել Գիրք</span>
+      </button>
+    </div>
+
+    <!-- Tab 1: Available Books -->
+    <div class="tab-content active" id="view-available">
+      <h2 class="section-title" data-i18n="titleAvailable">📚 Առկա Գրքերի Ցուցակ</h2>
+      <div class="books-grid" id="availableBooksGrid"></div>
+    </div>
+
+    <!-- Tab 2: Unavailable Books -->
+    <div class="tab-content" id="view-unavailable">
+      <h2 class="section-title" style="color: #ef4444;" data-i18n="titleUnavailable">📕 Ոչ Առկա Գրքեր (Վերցված)</h2>
+      <div class="books-grid" id="unavailableBooksGrid"></div>
+    </div>
+
+    <!-- Tab 3: Add/Edit Book Form -->
+    <div class="tab-content" id="view-add">
+      <div class="add-book-section">
+        <h2 class="section-title" id="formTitle" data-i18n="formNew">➕ Նոր Գրքի Ավելացում</h2>
+        <form id="bookForm" onsubmit="saveBook(event)">
+          <input type="hidden" id="editBookId">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="bookTitle" data-i18n="lblTitle">Գրքի անուն *</label>
+              <input type="text" id="bookTitle" required data-i18n-ph="phTitle" placeholder="օր․ Ռանչպարների կանչը">
+            </div>
+            <div class="form-group">
+              <label for="bookAuthor" data-i18n="lblAuthor">Հեղինակ *</label>
+              <input type="text" id="bookAuthor" required data-i18n-ph="phAuthor" placeholder="օր․ Խաչիկ Դաշտենց">
+            </div>
+            <div class="form-group">
+              <label for="bookPart" data-i18n="lblPart">Մաս / Հատոր</label>
+              <input type="text" id="bookPart" data-i18n-ph="phPart" placeholder="օր․ 2-րդ մաս">
+            </div>
+            <div class="form-group">
+              <label for="bookCloset" data-i18n="lblCloset">Պահարան (Closet) *</label>
+              <input type="text" id="bookCloset" required data-i18n-ph="phCloset" placeholder="օր․ 3-րդ պահարան">
+            </div>
+            <div class="form-group">
+              <label for="bookRow" data-i18n="lblRow">Շարք (Row) *</label>
+              <input type="text" id="bookRow" required data-i18n-ph="phRow" placeholder="օր․ 6-րդ շարք">
+            </div>
+            <div class="form-group">
+              <label for="imgFile1" data-i18n="lblImg1">Նկար 1 (Գլխավոր)</label>
+              <input type="file" id="imgFile1" accept="image/*">
+            </div>
+            <div class="form-group">
+              <label for="imgFile2" data-i18n="lblImg2">Նկար 2 (Լրացուցիչ)</label>
+              <input type="file" id="imgFile2" accept="image/*">
+            </div>
+          </div>
+          <div style="display: flex;">
+            <button type="submit" class="btn btn-add" id="submitBtn" data-i18n="save">Պահպանել Գիրքը</button>
+            <button type="button" class="btn btn-cancel" id="cancelEditBtn" style="display:none;" onclick="resetForm()" data-i18n="cancel">Չեղարկել</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal" id="detailModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('detailModal')">&times;</span>
+      <h2 class="section-title" id="mDetailTitle" data-i18n="detailsTitle">Գրքի Մանրամասներ</h2>
+      <div class="detail-images" id="mDetailImages"></div>
+      <div class="detail-list" id="mDetailText"></div>
+      
+      <div class="modal-buttons">
+        <button class="btn btn-borrow" id="btnBorrowInModal">📖 Վերցնել</button>
+        <button class="btn btn-warning" id="btnEditBook" data-i18n="edit">✏️ Ուղղել (Խմբագրել)</button>
+        <button class="btn btn-danger" id="btnDeleteBook" data-i18n="delete">🗑️ Ջնջել Գիրքը</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Borrow Modal -->
+  <div class="modal" id="borrowModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('borrowModal')">&times;</span>
+      <h2 class="section-title" data-i18n="borrowTitle">📖 Վերցնել Գիրքը</h2>
+      <form id="borrowForm" onsubmit="confirmBorrow(event)">
+        <input type="hidden" id="borrowBookId">
+        <div class="form-group" style="margin-bottom: 15px;">
+          <label for="borrowerName" data-i18n="lblBorrowerName">Վերցնողի Անուն Ազգանուն *</label>
+          <input type="text" id="borrowerName" required data-i18n-ph="phName" placeholder="օր․ Արմեն Գրիգորյան">
+        </div>
+        <div class="form-group" style="margin-bottom: 15px;">
+          <label for="borrowerClass" data-i18n="lblClass">Դասարան *</label>
+          <input type="text" id="borrowerClass" required data-i18n-ph="phClass" placeholder="օր․ 8-րդ Ա">
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="borrowDate" data-i18n="lblDate">Վերցնելու Ամսաթիվ *</label>
+          <input type="date" id="borrowDate" required>
+        </div>
+        <button type="submit" class="btn btn-borrow" style="width: 100%;" data-i18n="confirmBorrow">Հաստատել և Վերցնել</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('deleteModal')">&times;</span>
+      <h2 class="section-title" data-i18n="delete">🗑️ Ջնջել Գիրքը</h2>
+      <p id="deleteMessage" style="line-height: 1.6; margin-bottom: 8px;"></p>
+      <div class="modal-buttons">
+        <button type="button" class="btn btn-danger" id="btnConfirmDelete" data-i18n="delete">🗑️ Ջնջել Գիրքը</button>
+        <button type="button" class="btn btn-cancel" style="margin-left:0;" onclick="closeModal('deleteModal')" data-i18n="cancel">Չեղարկել</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Return Modal -->
+  <div class="modal" id="returnModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('returnModal')">&times;</span>
+      <h2 class="section-title" data-i18n="returnTitle">🔄 Հանձնել Գիրքը</h2>
+      <div id="returnLocationInfo" style="margin-bottom: 20px; line-height: 1.6;"></div>
+      <button class="btn btn-add" onclick="confirmReturn()" data-i18n="confirmReturn">Ավարտել (Վերադարձնել Առկա ցուցակ)</button>
+    </div>
+  </div>
+
+  <script>
+    let books = [];
+    let currentBookIdForReturn = null;
+
+    // ===== Translations =====
+    const I18N = {
+      hy: {
+        search: "🔍 Որոնել գիրք կամ հեղինակ բոլոր ցուցակներում...",
+        tabAvailable: "📚 Առկա Գրքեր", tabUnavailable: "📕 Ոչ Առկա (Վերցված)", tabAdd: "➕ Ավելացնել Գիրք",
+        titleAvailable: "📚 Առկա Գրքերի Ցուցակ", titleUnavailable: "📕 Ոչ Առկա Գրքեր (Վերցված)",
+        formNew: "➕ Նոր Գրքի Ավելացում", formEdit: "✏️ Գրքի Ուղղում / Խմբագրում",
+        lblTitle: "Գրքի անուն *", lblAuthor: "Հեղինակ *", lblPart: "Մաս / Հատոր", lblCloset: "Պահարան (Closet) *", lblRow: "Շարք (Row) *",
+        lblImg1: "Նկար 1 (Գլխավոր)", lblImg2: "Նկար 2 (Լրացուցիչ)",
+        phTitle: "օր․ Ռանչպարների կանչը", phAuthor: "օր․ Խաչիկ Դաշտենց", phPart: "օր․ 2-րդ մաս", phCloset: "օր․ 3-րդ պահարան", phRow: "օր․ 6-րդ շարք",
+        phName: "օր․ Արմեն Գրիգորյան", phClass: "օր․ 8-րդ Ա",
+        save: "Պահպանել Գիրքը", saveChanges: "Պահպանել Փոփոխությունները", cancel: "Չեղարկել",
+        detailsTitle: "Գրքի Մանրամասներ", edit: "✏️ Ուղղել (Խմբագրել)", delete: "🗑️ Ջնջել Գիրքը",
+        borrowTitle: "📖 Վերցնել Գիրքը", lblBorrowerName: "Վերցնողի Անուն Ազգանուն *", lblClass: "Դասարան *", lblDate: "Վերցնելու Ամսաթիվ *",
+        confirmBorrow: "Հաստատել և Վերցնել", returnTitle: "🔄 Հանձնել Գիրքը", confirmReturn: "Ավարտել (Վերադարձնել Առկա ցուցակ)",
+        details: "Մանրամասն", borrow: "📖 Վերցնել", giveBack: "🔄 Հանձնել",
+        emptyAvail: "Առկա ցուցակում գրքեր չկան:", emptyUnavail: "Ոչ առկա ցուցակում գրքեր չկան:",
+        author: "Հեղինակ:", partVol: "Մաս/Հատոր:", notSpecified: "Նշված չէ", location: "Գտնվելու տեղը:", status: "Կարգավիճակ:",
+        statusAvail: "Առկա է", statusTaken: "Վերցված է", borrowerLbl: "Վերցնող:", classLbl: "Դասարան:", dateLbl: "Վերցնելու ամսաթիվ:",
+        bookName: "Գրքի անուն:", putBack: "📍 Խնդրում ենք գիրքը դնել իր տեղում․",
+        confirmDelete: "Վստա՞հ եք, որ ցանկանում եք ջնջել «{title}» գիրքը:",
+        storageFull: "Չհաջողվեց պահպանել․ հիշողությունը լցված է։ Փորձեք ավելի փոքր նկար։"
+      },
+      ru: {
+        search: "🔍 Искать книгу или автора во всех списках...",
+        tabAvailable: "📚 В наличии", tabUnavailable: "📕 Нет в наличии (взяты)", tabAdd: "➕ Добавить книгу",
+        titleAvailable: "📚 Список книг в наличии", titleUnavailable: "📕 Книги не в наличии (взяты)",
+        formNew: "➕ Добавление новой книги", formEdit: "✏️ Редактирование книги",
+        lblTitle: "Название книги *", lblAuthor: "Автор *", lblPart: "Часть / Том", lblCloset: "Шкаф *", lblRow: "Полка (ряд) *",
+        lblImg1: "Фото 1 (главное)", lblImg2: "Фото 2 (дополнительное)",
+        phTitle: "напр. Зов ранчперов", phAuthor: "напр. Хачик Даштенц", phPart: "напр. 2-я часть", phCloset: "напр. 3-й шкаф", phRow: "напр. 6-й ряд",
+        phName: "напр. Армен Григорян", phClass: "напр. 8 «А»",
+        save: "Сохранить книгу", saveChanges: "Сохранить изменения", cancel: "Отмена",
+        detailsTitle: "Информация о книге", edit: "✏️ Редактировать", delete: "🗑️ Удалить книгу",
+        borrowTitle: "📖 Взять книгу", lblBorrowerName: "Имя и фамилия читателя *", lblClass: "Класс *", lblDate: "Дата получения *",
+        confirmBorrow: "Подтвердить и взять", returnTitle: "🔄 Сдать книгу", confirmReturn: "Готово (вернуть в список «В наличии»)",
+        details: "Подробнее", borrow: "📖 Взять", giveBack: "🔄 Сдать",
+        emptyAvail: "В списке «В наличии» нет книг.", emptyUnavail: "В списке «Нет в наличии» нет книг.",
+        author: "Автор:", partVol: "Часть/Том:", notSpecified: "Не указано", location: "Местонахождение:", status: "Статус:",
+        statusAvail: "В наличии", statusTaken: "Взята", borrowerLbl: "Взял:", classLbl: "Класс:", dateLbl: "Дата получения:",
+        bookName: "Название книги:", putBack: "📍 Пожалуйста, поставьте книгу на место:",
+        confirmDelete: "Вы уверены, что хотите удалить книгу «{title}»?",
+        storageFull: "Не удалось сохранить: память браузера заполнена. Попробуйте фото поменьше."
+      },
+      en: {
+        search: "🔍 Search for a book or author in all lists...",
+        tabAvailable: "📚 Available", tabUnavailable: "📕 Unavailable (Borrowed)", tabAdd: "➕ Add Book",
+        titleAvailable: "📚 Available Books", titleUnavailable: "📕 Unavailable Books (Borrowed)",
+        formNew: "➕ Add a New Book", formEdit: "✏️ Edit Book",
+        lblTitle: "Book title *", lblAuthor: "Author *", lblPart: "Part / Volume", lblCloset: "Closet *", lblRow: "Row *",
+        lblImg1: "Image 1 (Main)", lblImg2: "Image 2 (Additional)",
+        phTitle: "e.g. The Call of the Ranchers", phAuthor: "e.g. Khachik Dashtents", phPart: "e.g. Part 2", phCloset: "e.g. Closet 3", phRow: "e.g. Row 6",
+        phName: "e.g. Armen Grigoryan", phClass: "e.g. 8th A",
+        save: "Save Book", saveChanges: "Save Changes", cancel: "Cancel",
+        detailsTitle: "Book Details", edit: "✏️ Edit", delete: "🗑️ Delete Book",
+        borrowTitle: "📖 Borrow Book", lblBorrowerName: "Borrower's full name *", lblClass: "Class *", lblDate: "Borrow date *",
+        confirmBorrow: "Confirm and Borrow", returnTitle: "🔄 Return Book", confirmReturn: "Done (move back to Available)",
+        details: "Details", borrow: "📖 Borrow", giveBack: "🔄 Return",
+        emptyAvail: "There are no books in the available list.", emptyUnavail: "There are no books in the unavailable list.",
+        author: "Author:", partVol: "Part/Volume:", notSpecified: "Not specified", location: "Location:", status: "Status:",
+        statusAvail: "Available", statusTaken: "Borrowed", borrowerLbl: "Borrower:", classLbl: "Class:", dateLbl: "Borrow date:",
+        bookName: "Book title:", putBack: "📍 Please put the book back in its place:",
+        confirmDelete: "Are you sure you want to delete the book “{title}”?",
+        storageFull: "Could not save: browser storage is full. Try a smaller image."
+      }
+    };
+
+    let currentLang = 'hy';
+    try {
+      const savedLang = localStorage.getItem('my_library_lang');
+      if (savedLang && I18N[savedLang]) currentLang = savedLang;
+    } catch (e) {}
+
+    function t(key) {
+      return (I18N[currentLang] && I18N[currentLang][key]) || I18N.hy[key] || key;
+    }
+
+    function applyStaticTranslations() {
+      document.documentElement.lang = currentLang;
+      document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
+
+      const editing = !!document.getElementById('editBookId').value;
+      document.getElementById('formTitle').innerText = t(editing ? 'formEdit' : 'formNew');
+      document.getElementById('submitBtn').innerText = t(editing ? 'saveChanges' : 'save');
+    }
+
+    function setLang(lang) {
+      if (!I18N[lang]) return;
+      currentLang = lang;
+      try { localStorage.setItem('my_library_lang', lang); } catch (e) {}
+      applyStaticTranslations();
+      renderBooks(document.getElementById('searchInput').value);
+    }
+
+    window.onload = function() {
+      const savedBooks = localStorage.getItem('artstem_library_books');
+      if (savedBooks) {
+        books = JSON.parse(savedBooks);
+      } else {
+        // Mock data initialization
+        books = [
+          {
+            id: '1',
+            title: "Ռանչպարների կանչը",
+            author: "Խաչիկ Դաշտենց",
+            part: "2-րդ մաս",
+            closet: "3-րդ պահարան",
+            row: "6-րդ շարք",
+            img1: "",
+            img2: "",
+            isAvailable: true,
+            borrower: null
+          },
+          {
+            id: '2',
+            title: "Սամվել",
+            author: "Րաֆֆի",
+            part: "1-ին հատոր",
+            closet: "1-ին պահարան",
+            row: "2-րդ շարք",
+            img1: "",
+            img2: "",
+            isAvailable: false,
+            borrower: {
+              name: "Անի Գևորգյան",
+              class: "9-րդ Բ",
+              date: "2026-09-15"
+            }
+          }
+        ];
+        saveToLocalStorage();
+      }
+      applyStaticTranslations();
+      renderBooks();
+    };
+
+    function saveToLocalStorage() {
+      try {
+        localStorage.setItem('artstem_library_books', JSON.stringify(books));
+      } catch (err) {
+        console.error(err);
+        alert(t('storageFull'));
+      }
+      updateCounts();
+    }
+
+    function updateCounts() {
+      const avail = books.filter(b => b.isAvailable).length;
+      const unavail = books.filter(b => !b.isAvailable).length;
+      document.getElementById('count-available').innerText = avail;
+      document.getElementById('count-unavailable').innerText = unavail;
+    }
+
+    function goHome() {
+      ['detailModal', 'borrowModal', 'returnModal', 'deleteModal'].forEach(closeModal);
+      resetForm();
+      document.getElementById('searchInput').value = '';
+      renderBooks();
+      switchTab('available');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(view => view.classList.remove('active'));
+
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      document.getElementById(`view-${tabName}`).classList.add('active');
+    }
+
+    // Reads an image and downsizes it so it fits in browser storage
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) {
+          resolve("");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onerror = error => reject(error);
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = () => resolve(reader.result);
+          img.onload = () => {
+            const MAX = 800;
+            const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', 0.8));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function getDefaultCover(title) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#1b263b';
+      ctx.fillRect(0, 0, 300, 400);
+      ctx.fillStyle = '#90e0ef';
+      ctx.font = 'bold 22px Segoe UI';
+      ctx.textAlign = 'center';
+      
+      const words = title.split(' ');
+      let line = '';
+      let y = 180;
+      for (let n = 0; n < words.length; n++) {
+        let testLine = line + words[n] + ' ';
+        if (testLine.length > 15) {
+          ctx.fillText(line, 150, y);
+          line = words[n] + ' ';
+          y += 30;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, 150, y);
+      return canvas.toDataURL();
+    }
+
+    async function saveBook(e) {
+      e.preventDefault();
+      
+      const editId = document.getElementById('editBookId').value;
+      const title = document.getElementById('bookTitle').value.trim();
+      const author = document.getElementById('bookAuthor').value.trim();
+      const part = document.getElementById('bookPart').value.trim();
+      const closet = document.getElementById('bookCloset').value.trim();
+      const row = document.getElementById('bookRow').value.trim();
+
+      const file1 = document.getElementById('imgFile1').files[0];
+      const file2 = document.getElementById('imgFile2').files[0];
+
+      let img1Base64 = file1 ? await fileToBase64(file1) : null;
+      let img2Base64 = file2 ? await fileToBase64(file2) : null;
+
+      if (editId) {
+        const bookIndex = books.findIndex(b => b.id === editId);
+        if (bookIndex !== -1) {
+          books[bookIndex].title = title;
+          books[bookIndex].author = author;
+          books[bookIndex].part = part;
+          books[bookIndex].closet = closet;
+          books[bookIndex].row = row;
+          if (img1Base64) books[bookIndex].img1 = img1Base64;
+          if (img2Base64) books[bookIndex].img2 = img2Base64;
+        }
+      } else {
+        const newBook = {
+          id: Date.now().toString(),
+          title: title,
+          author: author,
+          part: part,
+          closet: closet,
+          row: row,
+          img1: img1Base64 || "",
+          img2: img2Base64 || "",
+          isAvailable: true,
+          borrower: null
+        };
+        books.push(newBook);
+      }
+
+      saveToLocalStorage();
+      resetForm();
+      switchTab('available');
+      renderBooks();
+    }
+
+    function resetForm() {
+      document.getElementById('bookForm').reset();
+      document.getElementById('editBookId').value = "";
+      document.getElementById('formTitle').innerText = t('formNew');
+      document.getElementById('submitBtn').innerText = t('save');
+      document.getElementById('cancelEditBtn').style.display = "none";
+    }
+
+    function renderBooks(filterQuery = "") {
+      const availGrid = document.getElementById('availableBooksGrid');
+      const unavailGrid = document.getElementById('unavailableBooksGrid');
+
+      availGrid.innerHTML = "";
+      unavailGrid.innerHTML = "";
+
+      const query = filterQuery.toLowerCase().trim();
+
+      const filteredBooks = books.filter(b => 
+        b.title.toLowerCase().includes(query) || 
+        b.author.toLowerCase().includes(query)
+      );
+
+      let availCount = 0;
+      let unavailCount = 0;
+
+      filteredBooks.forEach(book => {
+        const coverSrc = book.img1 || getDefaultCover(book.title);
+
+        const card = document.createElement('div');
+        card.className = 'book-card';
+
+        let cardHTML = `
+          <div class="clickable-area" onclick="openDetailModal('${book.id}')">
+            <img src="${coverSrc}" class="book-cover" alt="${book.title}">
+            <div class="book-info">
+              <div class="book-title">${book.title}</div>
+              <div class="book-author">✍️ ${book.author}</div>
+        `;
+
+        if (!book.isAvailable && book.borrower) {
+          cardHTML += `
+            <div class="borrowed-info">
+              👤 <b>${book.borrower.name}</b> (${book.borrower.class})<br>
+              📅 ${book.borrower.date}
+            </div>
+          `;
+        }
+
+        cardHTML += `
+            </div>
+          </div>
+          <div class="book-info" style="padding-top: 0; padding-bottom: 14px;">
+            <div class="card-actions">
+              <button class="btn btn-action" onclick="handleDetailClick(event, '${book.id}')">${t('details')}</button>
+        `;
+
+        if (book.isAvailable) {
+          cardHTML += `<button class="btn btn-action btn-borrow" onclick="handleBorrowClick(event, '${book.id}')">${t('borrow')}</button>`;
+        } else {
+          cardHTML += `<button class="btn btn-action btn-return" onclick="handleReturnClick(event, '${book.id}')">${t('giveBack')}</button>`;
+        }
+
+        cardHTML += `</div></div>`;
+        card.innerHTML = cardHTML;
+
+        if (book.isAvailable) {
+          availGrid.appendChild(card);
+          availCount++;
+        } else {
+          unavailGrid.appendChild(card);
+          unavailCount++;
+        }
+      });
+
+      if (availCount === 0) {
+        availGrid.innerHTML = `<div class="empty-msg">${t('emptyAvail')}</div>`;
+      }
+      if (unavailCount === 0) {
+        unavailGrid.innerHTML = `<div class="empty-msg">${t('emptyUnavail')}</div>`;
+      }
+
+      updateCounts();
+    }
+
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value;
+      renderBooks(query);
+    }
+
+    function handleDetailClick(event, id) {
+      event.stopPropagation();
+      openDetailModal(id);
+    }
+
+    function handleBorrowClick(event, id) {
+      event.stopPropagation();
+      openBorrowModal(id);
+    }
+
+    function handleReturnClick(event, id) {
+      event.stopPropagation();
+      openReturnModal(id);
+    }
+
+    function openDetailModal(id) {
+      const book = books.find(b => b.id === id);
+      if (!book) return;
+
+      document.getElementById('mDetailTitle').innerText = book.title;
+
+      const imgContainer = document.getElementById('mDetailImages');
+      imgContainer.innerHTML = "";
+
+      const cover1 = book.img1 || getDefaultCover(book.title);
+      imgContainer.innerHTML += `<img src="${cover1}" alt="Img 1">`;
+      if (book.img2) {
+        imgContainer.innerHTML += `<img src="${book.img2}" alt="Img 2">`;
+      }
+
+      let textHTML = `
+        <p><b>${t('author')}</b> ${book.author}</p>
+        <p><b>${t('partVol')}</b> ${book.part || t('notSpecified')}</p>
+        <p><b>${t('location')}</b> ${book.closet}, ${book.row}</p>
+        <p><b>${t('status')}</b> ${book.isAvailable ? `<span style="color:#2a9d8f; font-weight:bold;">${t('statusAvail')}</span>` : `<span style="color:#e85d04; font-weight:bold;">${t('statusTaken')}</span>`}</p>
+      `;
+
+      if (!book.isAvailable && book.borrower) {
+        textHTML += `
+          <hr style="margin: 10px 0; border-color: var(--border-color);">
+          <p><b>${t('borrowerLbl')}</b> ${book.borrower.name}</p>
+          <p><b>${t('classLbl')}</b> ${book.borrower.class}</p>
+          <p><b>${t('dateLbl')}</b> ${book.borrower.date}</p>
+        `;
+      }
+
+      document.getElementById('mDetailText').innerHTML = textHTML;
+
+      const btnBorrowInModal = document.getElementById('btnBorrowInModal');
+      if (book.isAvailable) {
+        btnBorrowInModal.innerText = t('borrow');
+        btnBorrowInModal.className = "btn btn-borrow";
+        btnBorrowInModal.onclick = function() {
+          closeModal('detailModal');
+          openBorrowModal(book.id);
+        };
+      } else {
+        btnBorrowInModal.innerText = t('giveBack');
+        btnBorrowInModal.className = "btn btn-return";
+        btnBorrowInModal.onclick = function() {
+          closeModal('detailModal');
+          openReturnModal(book.id);
+        };
+      }
+
+      document.getElementById('btnEditBook').onclick = function() {
+        closeModal('detailModal');
+        fillFormForEdit(book);
+      };
+
+      document.getElementById('btnDeleteBook').onclick = function() {
+        closeModal('detailModal');
+        openDeleteModal(book);
+      };
+
+      document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    function fillFormForEdit(book) {
+      document.getElementById('editBookId').value = book.id;
+      document.getElementById('bookTitle').value = book.title;
+      document.getElementById('bookAuthor').value = book.author;
+      document.getElementById('bookPart').value = book.part;
+      document.getElementById('bookCloset').value = book.closet;
+      document.getElementById('bookRow').value = book.row;
+
+      document.getElementById('formTitle').innerText = t('formEdit');
+      document.getElementById('submitBtn').innerText = t('saveChanges');
+      document.getElementById('cancelEditBtn').style.display = "inline-block";
+
+      switchTab('add');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('bookTitle').focus();
+    }
+
+    function openDeleteModal(book) {
+      document.getElementById('deleteMessage').innerText = t('confirmDelete').replace('{title}', book.title);
+      document.getElementById('btnConfirmDelete').onclick = function() {
+        deleteBook(book.id);
+        closeModal('deleteModal');
+      };
+      document.getElementById('deleteModal').style.display = 'flex';
+    }
+
+    function deleteBook(id) {
+      books = books.filter(b => b.id !== id);
+      saveToLocalStorage();
+      renderBooks(document.getElementById('searchInput').value);
+    }
+
+    function openBorrowModal(id) {
+      document.getElementById('borrowBookId').value = id;
+      document.getElementById('borrowForm').reset();
+      
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('borrowDate').value = today;
+
+      document.getElementById('borrowModal').style.display = 'flex';
+    }
+
+    function confirmBorrow(e) {
+      e.preventDefault();
+      const id = document.getElementById('borrowBookId').value;
+      const name = document.getElementById('borrowerName').value.trim();
+      const className = document.getElementById('borrowerClass').value.trim();
+      const date = document.getElementById('borrowDate').value;
+
+      const book = books.find(b => b.id === id);
+      if (book) {
+        book.isAvailable = false;
+        book.borrower = {
+          name: name,
+          class: className,
+          date: date
+        };
+        saveToLocalStorage();
+        renderBooks(document.getElementById('searchInput').value);
+      }
+
+      closeModal('borrowModal');
+    }
+
+    function openReturnModal(id) {
+      currentBookIdForReturn = id;
+      const book = books.find(b => b.id === id);
+      if (!book) return;
+
+      const infoDiv = document.getElementById('returnLocationInfo');
+      infoDiv.innerHTML = `
+        <p><b>${t('bookName')}</b> ${book.title}</p>
+        <br>
+        <p style="font-size: 15px; color: var(--highlight-color);">${t('putBack')}</p>
+        <p style="font-size: 18px; font-weight: bold; margin-top: 6px; color: #fde047;">
+          ${book.closet}, ${book.row}
+        </p>
+      `;
+
+      document.getElementById('returnModal').style.display = 'flex';
+    }
+
+    function confirmReturn() {
+      if (!currentBookIdForReturn) return;
+
+      const book = books.find(b => b.id === currentBookIdForReturn);
+      if (book) {
+        book.isAvailable = true;
+        book.borrower = null;
+        saveToLocalStorage();
+        renderBooks(document.getElementById('searchInput').value);
+      }
+
+      currentBookIdForReturn = null;
+      closeModal('returnModal');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+      }
+    };
+  </script>
+</body>
+</html>
